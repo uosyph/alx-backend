@@ -2,8 +2,7 @@
 """
 FIFOCache module implementing a First-In-First-Out (FIFO) based caching system.
 
-This module defines the `FIFOCache` class,
-which extends the `BaseCaching` class.
+This module defines the FIFOCache class, which extends the BaseCaching class.
 It provides a caching mechanism where items are added to the cache,
 and when the cache reaches its maximum capacity,
 the oldest item is removed to make space for the new item.

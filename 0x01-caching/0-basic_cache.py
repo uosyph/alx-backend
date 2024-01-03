@@ -2,8 +2,7 @@
 """
 BasicCache module implementing a simple dict-based caching system.
 
-This module defines the `BasicCache` class,
-which extends the `BaseCaching` class.
+This module defines the BasicCache class, which extends the BaseCaching class.
 It provides a basic caching mechanism where items
 can be stored and retrieved using a key.
 """
