@@ -40,8 +40,8 @@ class LRUCache(BaseCaching):
             self.cache_data.move_to_end(key)
 
             if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-                discarded = self.cache_data.popitem(last=False)
-                print(f"DISCARD: {discarded[0]}")
+                discarded_key = self.cache_data.popitem(last=False)
+                print(f"DISCARD: {discarded_key[0]}")
 
     def get(self, key):
         """

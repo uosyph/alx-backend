@@ -42,9 +42,9 @@ class MRUCache(BaseCaching):
                 self.mru = key
             else:
                 if key not in self.cache_data:
-                    discarded_item = self.mru
-                    del self.cache_data[discarded_item]
-                    print(f"DISCARD: {discarded_item}")
+                    discarded_key = self.mru
+                    del self.cache_data[discarded_key]
+                    print(f"DISCARD: {discarded_key}")
                     self.cache_data[key] = item
                     self.mru = key
                 else:
