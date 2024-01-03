@@ -9,7 +9,6 @@ the least frequently used item is removed to make space for the new item.
 """
 
 from base_caching import BaseCaching
-from collections import OrderedDict
 
 
 class LFUCache(BaseCaching):
@@ -22,8 +21,8 @@ class LFUCache(BaseCaching):
         Initialize class instance.
         """
         super().__init__()
-        self.cache_data = OrderedDict()
-        self.mru = ""
+        self.keys = []
+        self.uses = {}
 
     def put(self, key, item):
         """
@@ -37,19 +36,18 @@ class LFUCache(BaseCaching):
             None
         """
         if key and item:
-            if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
-                if key in self.cache_data:
-                    self.cache_data.update({key: item})
-                    self.mru = key
-                else:
-                    discarded_key = self.mru
-                    del self.cache_data[discarded_key]
-                    print(f"DISCARD: {discarded_key}")
-                    self.cache_data[key] = item
-                    self.mru = key
+            if len(self.keys) == BaseCaching.MAX_ITEMS and key not in self.keys:
+                discard_key = self.keys.pop(self.keys.index(self.get_lfu_item()))
+                del self.cache_data[discard_key]
+                del self.uses[discard_key]
+                print(f"DISCARD: {discard_key}")
+            self.cache_data[key] = item
+            if key in self.keys:
+                self.keys.append(self.keys.pop(self.keys.index(key)))
+                self.uses[key] += 1
             else:
-                self.cache_data[key] = item
-                self.mru = key
+                self.keys.append(key)
+                self.uses[key] = 0
 
     def get(self, key):
         """
@@ -63,5 +61,24 @@ class LFUCache(BaseCaching):
             or None if the key is not present in the cache.
         """
         if key in self.cache_data:
-            self.mru = key
+            self.keys.append(self.keys.pop(self.keys.index(key)))
+            self.uses[key] += 1
             return self.cache_data[key]
+
+    def get_lfu_item(self):
+        """
+        Return the key of the least frequently used item in the cache.
+        If multiple items have the same usage frequency,
+        return the least recently used one.
+
+        Returns:
+            The key of the least frequently used item in the cache.
+        """
+        items = list(self.uses.items())
+        min_freq = min(self.uses.values())
+
+        lfu_keys = [key for key, freq in items if freq == min_freq]
+
+        for key in self.keys:
+            if key in lfu_keys:
+                return key
