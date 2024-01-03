@@ -36,11 +36,16 @@ class LFUCache(BaseCaching):
             None
         """
         if key and item:
-            if len(self.keys) == BaseCaching.MAX_ITEMS and key not in self.keys:
-                discard_key = self.keys.pop(self.keys.index(self.get_lfu_item()))
-                del self.cache_data[discard_key]
-                del self.uses[discard_key]
-                print(f"DISCARD: {discard_key}")
+            if (
+                len(self.keys) == BaseCaching.MAX_ITEMS
+                and key not in self.keys
+            ):
+                discarded_key = self.keys.pop(
+                    self.keys.index(self.get_lfu_item()
+                                    ))
+                del self.cache_data[discarded_key]
+                del self.uses[discarded_key]
+                print(f"DISCARD: {discarded_key}")
             self.cache_data[key] = item
             if key in self.keys:
                 self.keys.append(self.keys.pop(self.keys.index(key)))
