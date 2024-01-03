@@ -11,7 +11,9 @@ from base_caching import BaseCaching
 
 
 class BasicCache(BaseCaching):
-    """BasicCache class implementing a simple dict-based caching system."""
+    """
+    BasicCache class implementing a simple dict-based caching system.
+    """
 
     def put(self, key, item):
         """
