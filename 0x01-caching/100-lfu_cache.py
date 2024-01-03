@@ -37,19 +37,19 @@ class LFUCache(BaseCaching):
             None
         """
         if key and item:
-            if len(self.cache_data) < BaseCaching.MAX_ITEMS:
-                self.cache_data[key] = item
-                self.mru = key
-            else:
-                if key not in self.cache_data:
+            if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
+                if key in self.cache_data:
+                    self.cache_data.update({key: item})
+                    self.mru = key
+                else:
                     discarded_key = self.mru
                     del self.cache_data[discarded_key]
                     print(f"DISCARD: {discarded_key}")
                     self.cache_data[key] = item
                     self.mru = key
-                else:
-                    self.cache_data.update({key: item})
-                    self.mru = key
+            else:
+                self.cache_data[key] = item
+                self.mru = key
 
     def get(self, key):
         """
