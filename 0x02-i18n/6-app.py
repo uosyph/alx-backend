@@ -35,6 +35,31 @@ class Config(object):
 app.config.from_object("6-app.Config")
 
 
+@app.before_request
+def before_request():
+    """
+    Execute before each request to find and set
+    user information in the global Flask context.
+
+    The user information is stored in 'flask.g.user'.
+    """
+    g.user = get_user()
+
+
+def get_user() -> Union[dict, None]:
+    """
+    Retrieve user information based on the 'login_as' query parameter.
+
+    Returns:
+        Union[dict, None]: A dictionary containing user information if found,
+        otherwise None.
+    """
+    login_as = request.args.get("login_as")
+    if login_as:
+        return users.get(int(login_as))
+    return None
+
+
 @app.route("/", methods=["GET"])
 def index() -> str:
     """
@@ -64,31 +89,6 @@ def get_locale() -> str:
     ):
         return g.user.get("locale")
     return request.accept_languages.best_match(app.config["LANGUAGES"])
-
-
-def get_user() -> Union[dict, None]:
-    """
-    Retrieve user information based on the 'login_as' query parameter.
-
-    Returns:
-        Union[dict, None]: A dictionary containing user information if found,
-        otherwise None.
-    """
-    login_as = request.args.get("login_as")
-    if login_as:
-        return users.get(int(login_as))
-    return None
-
-
-@app.before_request
-def before_request():
-    """
-    Execute before each request to find and set
-    user information in the global Flask context.
-
-    The user information is stored in 'flask.g.user'.
-    """
-    g.user = get_user()
 
 
 if __name__ == "__main__":
